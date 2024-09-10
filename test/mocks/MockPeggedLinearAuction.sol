@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity 0.8.27;
 
 import {PeggedLinearAuction} from "../../src/feeModules/PeggedLinearAuction.sol";
 import {JobRegistry} from "../../src/JobRegistry.sol";

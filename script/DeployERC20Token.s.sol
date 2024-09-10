@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.15;
+pragma solidity 0.8.27;
 
-import "forge-std/console2.sol";
-import "forge-std/Script.sol";
+import "forge-std/src/console2.sol";
+import "forge-std/src/Script.sol";
 import {ERC20Token} from "../src/ERC20Token.sol";
 
 contract DeployERC20Token is Script {

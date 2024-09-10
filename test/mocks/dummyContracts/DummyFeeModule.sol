@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.27;
 
 import {IFeeModule} from "../../../src/interfaces/IFeeModule.sol";
 import {JobRegistry} from "../../../src/JobRegistry.sol";

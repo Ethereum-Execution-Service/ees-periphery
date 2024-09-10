@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity 0.8.27;
 
 import {IFeeManager} from "./interfaces/IFeeManager.sol";
-import {Owned} from "solmate/src/auth/Owned.sol";
+import {Owned} from "lib/solmate/src/auth/Owned.sol";
 
 contract FeeManager is IFeeManager, Owned {
     uint32 public constant BASE_BPS = 1_000_000;

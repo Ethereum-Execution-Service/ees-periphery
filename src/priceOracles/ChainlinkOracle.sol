@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.27;
+
 import {AggregatorV3Interface} from "lib/chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import {ERC20} from "lib/solmate/src/tokens/ERC20.sol";
 
@@ -24,14 +27,14 @@ contract ChainlinkOracle {
         uint8 tokenDecimals = ERC20(_token).decimals();
 
         // get ETH/USD price
-        (, int256 ethPrice,,uint256 updatedAtEth,) = ethUsdPriceFeed.latestRoundData();
+        (, int256 ethPrice,, uint256 updatedAtEth,) = ethUsdPriceFeed.latestRoundData();
         AggregatorV3Interface feed = AggregatorV3Interface(feedAddress);
         // get token/USD price
-        (, int256 tokenPrice,,uint256 updatedAtToken,) = feed.latestRoundData();
+        (, int256 tokenPrice,, uint256 updatedAtToken,) = feed.latestRoundData();
 
         uint256 threshold = block.timestamp - updateThreshold;
 
-        if(updatedAtEth < threshold || updatedAtToken < threshold) revert FeedStale();
+        if (updatedAtEth < threshold || updatedAtToken < threshold) revert FeedStale();
 
         uint8 tokenFeedDecimals = feed.decimals();
 
@@ -41,5 +44,4 @@ contract ChainlinkOracle {
 
         return uint256(price);
     }
-
 }

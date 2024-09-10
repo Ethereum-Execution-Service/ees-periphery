@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity 0.8.27;
 
 import {IQuerier} from "./interfaces/IQuerier.sol";
 import {JobRegistry} from "./JobRegistry.sol";

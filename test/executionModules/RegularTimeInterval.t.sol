@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity 0.8.27;
 
-import {Test} from "forge-std/Test.sol";
+import {Test} from "lib/forge-std/src/Test.sol";
 import {SafeERC20, IERC20, IERC20Permit} from "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {TokenProvider} from "../utils/TokenProvider.sol";
 import {GasSnapshot} from "forge-gas-snapshot/GasSnapshot.sol";

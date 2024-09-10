@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity 0.8.27;
 
 import {IAutoSwap} from "../interfaces/applications/IAutoSwap.sol";
 import {FeeManager} from "../FeeManager.sol";
