@@ -42,6 +42,8 @@ contract ChainlinkOracle {
 
         int256 price = (ethPrice * int256(10 ** scaleDecimals)) / tokenPrice;
 
+        // we already know usdc i 1 dollar (well use this assumption)
+
         return uint256(price);
     }
 }

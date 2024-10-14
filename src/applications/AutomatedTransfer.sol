@@ -3,8 +3,8 @@ pragma solidity 0.8.27;
 
 import {ERC20} from "solmate/src/tokens/ERC20.sol";
 import {SafeTransferLib} from "solmate/src/utils/SafeTransferLib.sol";
-import {IApplication} from "../interfaces/IApplication.sol";
-import {JobRegistry} from "../JobRegistry.sol";
+import {IApplication} from "ees-core/src/interfaces/IApplication.sol";
+import {JobRegistry} from "ees-core/src/JobRegistry.sol";
 import {Owned} from "solmate/src/auth/Owned.sol";
 
 contract AutomatedTransfer is IApplication, Owned {

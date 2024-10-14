@@ -5,8 +5,8 @@ import {IAutoSwap} from "../interfaces/applications/IAutoSwap.sol";
 import {FeeManager} from "../FeeManager.sol";
 import {ERC20} from "solmate/src/tokens/ERC20.sol";
 import {SafeTransferLib} from "solmate/src/utils/SafeTransferLib.sol";
-import {IApplication} from "../interfaces/IApplication.sol";
-import {JobRegistry} from "../JobRegistry.sol";
+import {IApplication} from "ees-core/src/interfaces/IApplication.sol";
+import {JobRegistry} from "ees-core/src/JobRegistry.sol";
 import {IUniswapV3Pool} from "v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 
 contract AutoSwap is IAutoSwap, IApplication, FeeManager {

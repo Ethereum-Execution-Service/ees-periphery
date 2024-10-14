@@ -5,8 +5,8 @@ import {IAutoPay} from "../interfaces/applications/IAutoPay.sol";
 import {FeeManager} from "../FeeManager.sol";
 import {ERC20} from "solmate/src/tokens/ERC20.sol";
 import {SafeTransferLib} from "solmate/src/utils/SafeTransferLib.sol";
-import {IApplication} from "../interfaces/IApplication.sol";
-import {JobRegistry} from "../JobRegistry.sol";
+import {IApplication} from "ees-core/src/interfaces/IApplication.sol";
+import {JobRegistry} from "ees-core/src/JobRegistry.sol";
 
 contract AutoPay is IAutoPay, IApplication, FeeManager {
     using SafeTransferLib for ERC20;
