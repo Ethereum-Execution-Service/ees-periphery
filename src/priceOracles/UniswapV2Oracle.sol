@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.0;
 
-import {IPriceOracle} from "../interfaces/IPriceOracle.sol";
+import {IPriceOracle} from "ees-core/src/interfaces/IPriceOracle.sol";
 
 import {UniswapV2Factory} from "lib/v2-core/contracts/UniswapV2Factory.sol";
 import {UniswapV2Pair} from "lib/v2-core/contracts/UniswapV2Pair.sol";
@@ -13,13 +13,14 @@ contract UniswapV2Oracle is IPriceOracle {
         factory = _factory;
     }
 
-    function getPrice(address _token, bytes calldata _data) external view returns (uint256) {
+    function getPrice(address _token, bytes calldata _data) external view returns (uint256, uint256) {
         UniswapV2Pair pair = UniswapV2Pair(factory.getPair(_token, address(0)));
 
+        // FIX SECOND ARGUMENT
         if (_token == pair.token0()) {
-            return pair.price0CumulativeLast();
+            return (pair.price0CumulativeLast(), 0);
         } else {
-            return pair.price1CumulativeLast();
+            return (pair.price1CumulativeLast(), 0);
         }
     }
 }

@@ -18,7 +18,7 @@ contract ChainlinkOracle {
 
     error FeedStale();
 
-    function getPrice(address _token, bytes calldata _data) public view returns (uint256) {
+    function getPrice(address _token, bytes calldata _data) public view returns (uint256, uint256) {
         address feedAddress;
         assembly {
             feedAddress := calldataload(_data.offset)
@@ -44,6 +44,6 @@ contract ChainlinkOracle {
 
         // we already know usdc i 1 dollar (well use this assumption)
 
-        return uint256(price);
+        return (uint256(price), uint256(tokenPrice));
     }
 }
