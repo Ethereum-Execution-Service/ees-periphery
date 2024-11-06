@@ -7,12 +7,12 @@ import {ERC20} from "lib/solmate/src/tokens/ERC20.sol";
 /// @author Victor Brevig
 contract ChainlinkOracle {
     AggregatorV3Interface internal ethUsdPriceFeed;
-    uint8 internal ethPriceDecimals;
+    uint8 internal ethPriceFeedDecimals;
     uint256 updateThreshold;
 
     constructor(address _ethUsdPriceFeed, uint256 _updateThreshold) {
         ethUsdPriceFeed = AggregatorV3Interface(_ethUsdPriceFeed);
-        ethPriceDecimals = ethUsdPriceFeed.decimals();
+        ethPriceFeedDecimals = ethUsdPriceFeed.decimals();
         updateThreshold = _updateThreshold;
     }
 
@@ -38,12 +38,21 @@ contract ChainlinkOracle {
 
         uint8 tokenFeedDecimals = feed.decimals();
 
-        uint8 scaleDecimals = ethPriceDecimals + tokenDecimals - tokenFeedDecimals;
+        uint8 scaleDecimals = ethPriceFeedDecimals + tokenDecimals - tokenFeedDecimals;
 
+        // how many of token per 1 eth in tokenDecimals
         int256 price = (ethPrice * int256(10 ** scaleDecimals)) / tokenPrice;
 
-        // we already know usdc i 1 dollar (well use this assumption)
+        // Scale tokenPrice to match token decimals
+        int256 tokenPriceInUsd = tokenPrice;
+        if (tokenDecimals > tokenFeedDecimals) {
+            // If token has more decimals than feed, multiply
+            tokenPriceInUsd = tokenPrice * int256(10 ** (tokenDecimals - tokenFeedDecimals));
+        } else if (tokenDecimals < tokenFeedDecimals) {
+            // If token has fewer decimals than feed, divide
+            tokenPriceInUsd = tokenPrice / int256(10 ** (tokenFeedDecimals - tokenDecimals));
+        }
 
-        return (uint256(price), uint256(tokenPrice));
+        return (uint256(price), uint256(tokenPriceInUsd));
     }
 }

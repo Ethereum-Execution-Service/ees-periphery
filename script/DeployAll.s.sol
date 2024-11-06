@@ -11,8 +11,8 @@ import {JobRegistry} from "ees-core/src/JobRegistry.sol";
 import {Coordinator} from "ees-core/src/Coordinator.sol";
 
 contract DeployAll is Script {
-    address jobRegistry = 0x3F87eF30923537b407Aafe96e4A498704380d0e7;
-    address coordinator = 0xbad1c261f90bcB7d95Fead57f68433859ce3B6d1;
+    address jobRegistry = 0x33F0B69235B1fFB7ad97aCc313C35E554281Ce00;
+    address coordinator = 0xe4C1b552ca7e09ef79e0F77C6F319Cca11F002b7;
 
     function setUp() public {}
 
@@ -20,7 +20,7 @@ contract DeployAll is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        batchSlasher = new BatchSlasher(jobRegistry);
+        batchSlasher = new BatchSlasher(coordinator);
         console2.log("BatchSlasher Deployed:", address(batchSlasher));
 
         querier = new Querier(JobRegistry(jobRegistry), Coordinator(coordinator));

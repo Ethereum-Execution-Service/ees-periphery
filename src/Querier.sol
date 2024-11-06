@@ -18,6 +18,25 @@ contract Querier is IQuerier {
         jobRegistry = _jobRegistry;
         coordinator = _coordinator;
     }
+    // HAVE TO BREAK UP INTO TWO STRUCTS TO AVOID STACK TOO DEEP ERROR
+    struct JobBasicInfo {
+        uint256 index;
+        address owner;
+        bool active;
+        bool ignoreAppRevert;
+        bool sponsorFallbackToOwner;
+        bool sponsorCanUpdateFeeModule;
+        bytes1 executionModule;
+        bytes1 feeModule;
+        uint32 executionWindow;
+    }
+    struct JobExtendedInfo {
+        address sponsor;
+        uint48 executionCounter;
+        uint48 maxExecutions;
+        IApplication application;
+        uint96 creationTime;
+    }
 
     function getJobs(uint256[] calldata _indices) public view override returns (JobData[] memory) {
         JobData[] memory jobsData = new JobData[](_indices.length);
@@ -27,41 +46,66 @@ contract Querier is IQuerier {
                 address owner,
                 bool active,
                 bool ignoreAppRevert,
-                uint40 inactiveGracePeriod,
+                bool sponsorFallbackToOwner,
+                bool sponsorCanUpdateFeeModule,
+                bytes1 executionModule,
+                bytes1 feeModule,
+                uint32 executionWindow,
                 address sponsor,
                 uint48 executionCounter,
                 uint48 maxExecutions,
                 IApplication application,
-                bytes1 executionModule,
-                bytes1 feeModule,
-                uint32 executionWindow
+                uint96 creationTime
             ) = jobRegistry.jobs(index);
-            IExecutionModule executionModuleContract = jobRegistry.executionModules(uint8(executionModule));
-            IFeeModule feeModuleContract = jobRegistry.feeModules(uint8(feeModule));
-            JobData memory jobData = JobData({
+
+            JobBasicInfo memory basicInfo = JobBasicInfo({
                 index: index,
                 owner: owner,
                 active: active,
                 ignoreAppRevert: ignoreAppRevert,
-                inactiveGracePeriod: inactiveGracePeriod,
-                sponsor: sponsor,
-                application: application,
-                executionCounter: executionCounter,
-                maxExecutions: maxExecutions,
+                sponsorFallbackToOwner: sponsorFallbackToOwner,
+                sponsorCanUpdateFeeModule: sponsorCanUpdateFeeModule,
                 executionModule: executionModule,
                 feeModule: feeModule,
-                executionWindow: executionWindow,
+                executionWindow: executionWindow
+            });
+
+            JobExtendedInfo memory extendedInfo = JobExtendedInfo({
+                sponsor: sponsor,
+                executionCounter: executionCounter,
+                maxExecutions: maxExecutions,
+                application: application,
+                creationTime: creationTime
+            });
+
+            IExecutionModule executionModuleContract = jobRegistry.executionModules(uint8(basicInfo.executionModule));
+            IFeeModule feeModuleContract = jobRegistry.feeModules(uint8(basicInfo.feeModule));
+
+            jobsData[i] = JobData({
+                index: basicInfo.index,
+                owner: basicInfo.owner,
+                active: basicInfo.active,
+                ignoreAppRevert: basicInfo.ignoreAppRevert,
+                sponsorFallbackToOwner: basicInfo.sponsorFallbackToOwner,
+                sponsorCanUpdateFeeModule: basicInfo.sponsorCanUpdateFeeModule,
+                executionModule: basicInfo.executionModule,
+                feeModule: basicInfo.feeModule,
+                executionWindow: basicInfo.executionWindow,
+                sponsor: extendedInfo.sponsor,
+                executionCounter: extendedInfo.executionCounter,
+                maxExecutions: extendedInfo.maxExecutions,
+                application: extendedInfo.application,
+                creationTime: extendedInfo.creationTime,
                 executionModuleData: executionModuleContract.getEncodedData(index),
                 feeModuleData: feeModuleContract.getEncodedData(index),
-                jobIsExpired: executionModuleContract.jobIsExpired(index, executionWindow),
-                jobInExecutionWindow: executionModuleContract.jobIsInExecutionMode(index, executionWindow)
+                jobIsExpired: executionModuleContract.jobIsExpired(index, basicInfo.executionWindow),
+                jobInExecutionWindow: executionModuleContract.jobIsInExecutionMode(index, basicInfo.executionWindow)
             });
-            jobsData[i] = jobData;
+
             unchecked {
                 ++i;
             }
         }
-
         return jobsData;
     }
 
@@ -79,7 +123,8 @@ contract Querier is IQuerier {
                 bool initialized,
                 uint40 arrayIndex,
                 uint8 lastCheckinRound,
-                uint192 lastCheckinEpoch,
+                uint96 lastCheckinEpoch,
+                uint96 executionsInEpochCreatedBeforeEpoch,
                 uint256 stakingTimestamp
             ) = coordinator.executorInfo(_executors[i]);
             ICoordinator.Executor memory executor = ICoordinator.Executor({
@@ -89,6 +134,7 @@ contract Querier is IQuerier {
                 arrayIndex: arrayIndex,
                 lastCheckinRound: lastCheckinRound,
                 lastCheckinEpoch: lastCheckinEpoch,
+                executionsInEpochCreatedBeforeEpoch: executionsInEpochCreatedBeforeEpoch,
                 stakingTimestamp: stakingTimestamp
             });
             executors[i] = executor;
@@ -159,7 +205,7 @@ contract Querier is IQuerier {
             )
         );
         address[] memory selectedExecutors = new address[](roundsPerEpoch);
-        for (uint256 i; i < roundsPerEpoch; i++) {
+        for (uint256 i; i < roundsPerEpoch; ++i) {
             uint256 executorIndex = uint256(keccak256(abi.encodePacked(seed, i))) % uint256(numberOfActiveExecutors);
             selectedExecutors[i] = coordinator.activeExecutors(executorIndex);
         }
