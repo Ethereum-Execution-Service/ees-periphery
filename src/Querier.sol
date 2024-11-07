@@ -166,10 +166,11 @@ contract Querier is IQuerier {
         return commitData;
     }
 
-    function getCurrentEpochInfo() public view override returns (uint192, uint256, bytes32, uint40, address[] memory) {
+    function getCurrentEpochInfo() public view override returns (uint192, uint256, bytes32, uint40, address[] memory, uint256) {
         uint192 epoch = coordinator.epoch();
         uint40 numberOfActiveExecutors = coordinator.numberOfActiveExecutors();
         bytes32 seed = coordinator.seed();
+        uint256 poolBalance = coordinator.epochPoolBalance();
 
         bytes memory config = coordinator.exportConfig();
         // Decode the config to get roundsPerEpoch
@@ -211,6 +212,6 @@ contract Querier is IQuerier {
             uint256 executorIndex = uint256(keccak256(abi.encodePacked(seed, i))) % uint256(numberOfActiveExecutors);
             selectedExecutors[i] = coordinator.activeExecutors(executorIndex);
         }
-        return (epoch, coordinator.epochEndTime(), seed, numberOfActiveExecutors, selectedExecutors);
+        return (epoch, coordinator.epochEndTime(), seed, numberOfActiveExecutors, selectedExecutors, poolBalance);
     }
 }

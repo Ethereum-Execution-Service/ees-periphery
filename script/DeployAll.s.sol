@@ -11,8 +11,8 @@ import {JobRegistry} from "ees-core/src/JobRegistry.sol";
 import {Coordinator} from "ees-core/src/Coordinator.sol";
 
 contract DeployAll is Script {
-    address jobRegistry = 0xb73a1C7AcE3F7850330c09682b4f96dFE1592cC1;
-    address coordinator = 0xa729fD2009407DB72579468cba0a0e26A02D0297;
+    address jobRegistry = 0x31056b2A208dA734A45C849106288b69cb6F5235;
+    address coordinator = 0xFe42791A3f50e77d733380bB0C05B6b3cA053F00;
 
     function setUp() public {}
 

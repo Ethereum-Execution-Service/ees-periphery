@@ -54,5 +54,5 @@ interface IQuerier {
      * @return seed The seed for the current epoch.
      * @return numberOfActiveExecutors The number of active executors during the epoch.
      */
-    function getCurrentEpochInfo() external view returns (uint192, uint256, bytes32, uint40, address[] memory);
+    function getCurrentEpochInfo() external view returns (uint192, uint256, bytes32, uint40, address[] memory, uint256);
 }
