@@ -53,6 +53,8 @@ interface IQuerier {
      * @return epochEndTime The end time of the current epoch.
      * @return seed The seed for the current epoch.
      * @return numberOfActiveExecutors The number of active executors during the epoch.
+     * @return poolBalance The pool balance of the current epoch.
+     * @return nextEpochPoolBalance The pool balance of the next epoch (this will increase during the current epoch).
      */
-    function getCurrentEpochInfo() external view returns (uint192, uint256, bytes32, uint40, address[] memory, uint256);
+    function getCurrentEpochInfo() external view returns (uint192, uint256, bytes32, uint40, address[] memory, uint256, uint256);
 }
