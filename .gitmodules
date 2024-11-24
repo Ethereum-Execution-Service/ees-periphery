@@ -13,9 +13,9 @@
 [submodule "lib/chainlink"]
 	path = lib/chainlink
 	url = https://github.com/smartcontractkit/chainlink
-[submodule "lib/ees-core"]
-	path = lib/ees-core
-	url = https://github.com/victorbrevig/ees-core
 [submodule "lib/v2-core"]
 	path = lib/v2-core
 	url = https://github.com/uniswap/v2-core
+[submodule "lib/ees-core"]
+	path = lib/ees-core
+	url = https://github.com/Ethereum-Execution-Service/ees-core

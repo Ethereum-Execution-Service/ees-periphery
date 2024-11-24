@@ -14,7 +14,8 @@ interface IQuerier {
         bool sponsorCanUpdateFeeModule;
         bytes1 executionModule;
         bytes1 feeModule;
-        uint32 executionWindow;
+        uint24 executionWindow;
+        uint24 zeroFeeWindow;
         address sponsor;
         uint48 executionCounter;
         uint48 maxExecutions;

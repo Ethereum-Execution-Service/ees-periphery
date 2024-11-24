@@ -28,7 +28,8 @@ contract Querier is IQuerier {
         bool sponsorCanUpdateFeeModule;
         bytes1 executionModule;
         bytes1 feeModule;
-        uint32 executionWindow;
+        uint24 executionWindow;
+        uint24 zeroFeeWindow;
     }
     struct JobExtendedInfo {
         address sponsor;
@@ -50,7 +51,8 @@ contract Querier is IQuerier {
                 bool sponsorCanUpdateFeeModule,
                 bytes1 executionModule,
                 bytes1 feeModule,
-                uint32 executionWindow,
+                uint24 executionWindow,
+                uint24 zeroFeeWindow,
                 address sponsor,
                 uint48 executionCounter,
                 uint48 maxExecutions,
@@ -67,7 +69,8 @@ contract Querier is IQuerier {
                 sponsorCanUpdateFeeModule: sponsorCanUpdateFeeModule,
                 executionModule: executionModule,
                 feeModule: feeModule,
-                executionWindow: executionWindow
+                executionWindow: executionWindow,
+                zeroFeeWindow: zeroFeeWindow
             });
 
             JobExtendedInfo memory extendedInfo = JobExtendedInfo({
@@ -78,8 +81,10 @@ contract Querier is IQuerier {
                 creationTime: creationTime
             });
 
-            IExecutionModule executionModuleContract = jobRegistry.executionModules(uint8(basicInfo.executionModule));
-            IFeeModule feeModuleContract = jobRegistry.feeModules(uint8(basicInfo.feeModule));
+            (address executionModuleAddress,) = coordinator.modules(uint8(basicInfo.executionModule));
+            IExecutionModule executionModuleContract = IExecutionModule(executionModuleAddress);
+            (address feeModuleAddress,) = coordinator.modules(uint8(basicInfo.feeModule));
+            IFeeModule feeModuleContract = IFeeModule(feeModuleAddress);
 
             jobsData[i] = JobData({
                 index: basicInfo.index,
@@ -91,6 +96,7 @@ contract Querier is IQuerier {
                 executionModule: basicInfo.executionModule,
                 feeModule: basicInfo.feeModule,
                 executionWindow: basicInfo.executionWindow,
+                zeroFeeWindow: basicInfo.zeroFeeWindow,
                 sponsor: extendedInfo.sponsor,
                 executionCounter: extendedInfo.executionCounter,
                 maxExecutions: extendedInfo.maxExecutions,
@@ -125,8 +131,9 @@ contract Querier is IQuerier {
                 uint8 roundsCheckedInEpoch,
                 uint8 lastCheckinRound,
                 uint96 lastCheckinEpoch,
-                uint96 executionsInEpochCreatedBeforeEpoch,
-                uint256 stakingTimestamp
+                uint96 executionsInRoundsInEpoch,
+                uint256 lastRegistrationTimestamp,
+                uint256 registeredModules
             ) = coordinator.executorInfo(_executors[i]);
             ICoordinator.Executor memory executor = ICoordinator.Executor({
                 balance: balance,
@@ -136,8 +143,9 @@ contract Querier is IQuerier {
                 roundsCheckedInEpoch: roundsCheckedInEpoch,
                 lastCheckinRound: lastCheckinRound,
                 lastCheckinEpoch: lastCheckinEpoch,
-                executionsInEpochCreatedBeforeEpoch: executionsInEpochCreatedBeforeEpoch,
-                stakingTimestamp: stakingTimestamp
+                executionsInRoundsInEpoch: executionsInRoundsInEpoch,
+                lastRegistrationTimestamp: lastRegistrationTimestamp,
+                registeredModules: registeredModules
             });
             executors[i] = executor;
             unchecked {
