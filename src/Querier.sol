@@ -196,6 +196,8 @@ contract Querier is IQuerier {
             ,
             ,
             ,
+            ,
+            ,
             , // Skip the remaining parameters
         ) = abi.decode(
             config,
@@ -207,20 +209,25 @@ contract Querier is IQuerier {
                 uint256,
                 uint256,
                 uint8,
+                uint8,
+                uint8,
+                uint8,
+                uint8,
+                uint8,
                 uint256,
                 uint256,
-                uint8,
-                uint8,
-                uint8,
-                uint8,
-                uint8
+                uint256,
+                uint256
             )
         );
-        address[] memory selectedExecutors = new address[](roundsPerEpoch);
-        for (uint256 i; i < roundsPerEpoch; ++i) {
+        address[] memory designatedExecutors = new address[](roundsPerEpoch);
+        for (uint256 i; i < roundsPerEpoch;) {
             uint256 executorIndex = uint256(keccak256(abi.encodePacked(seed, i))) % uint256(numberOfActiveExecutors);
-            selectedExecutors[i] = coordinator.activeExecutors(executorIndex);
+            designatedExecutors[i] = coordinator.activeExecutors(executorIndex);
+            unchecked {
+                ++i;
+            }
         }
-        return (epoch, coordinator.epochEndTime(), seed, numberOfActiveExecutors, selectedExecutors, poolBalance, nextEpochPoolBalance);
+        return (epoch, coordinator.epochEndTime(), seed, numberOfActiveExecutors, designatedExecutors, poolBalance, nextEpochPoolBalance);
     }
 }
