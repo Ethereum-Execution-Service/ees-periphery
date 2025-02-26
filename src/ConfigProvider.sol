@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.27;
+pragma solidity 0.8.26;
 
 import {JobRegistry} from "ees-core/src/JobRegistry.sol";
 import {Coordinator} from "ees-core/src/Coordinator.sol";

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.27;
+pragma solidity 0.8.26;
 
 import {IQuerier} from "./interfaces/IQuerier.sol";
 import {JobRegistry} from "ees-core/src/JobRegistry.sol";
@@ -19,6 +19,7 @@ contract Querier is IQuerier {
         coordinator = _coordinator;
     }
     // HAVE TO BREAK UP INTO TWO STRUCTS TO AVOID STACK TOO DEEP ERROR
+
     struct JobBasicInfo {
         uint256 index;
         address owner;
@@ -31,6 +32,7 @@ contract Querier is IQuerier {
         uint24 executionWindow;
         uint24 zeroFeeWindow;
     }
+
     struct JobExtendedInfo {
         address sponsor;
         uint48 executionCounter;
@@ -174,7 +176,12 @@ contract Querier is IQuerier {
         return commitData;
     }
 
-    function getCurrentEpochInfo() public view override returns (uint192, uint256, bytes32, uint40, address[] memory, uint256, uint256) {
+    function getCurrentEpochInfo()
+        public
+        view
+        override
+        returns (uint192, uint256, bytes32, uint40, address[] memory, uint256, uint256)
+    {
         uint192 epoch = coordinator.epoch();
         uint40 numberOfActiveExecutors = coordinator.numberOfActiveExecutors();
         bytes32 seed = coordinator.seed();
@@ -228,6 +235,14 @@ contract Querier is IQuerier {
                 ++i;
             }
         }
-        return (epoch, coordinator.epochEndTime(), seed, numberOfActiveExecutors, designatedExecutors, poolBalance, nextEpochPoolBalance);
+        return (
+            epoch,
+            coordinator.epochEndTime(),
+            seed,
+            numberOfActiveExecutors,
+            designatedExecutors,
+            poolBalance,
+            nextEpochPoolBalance
+        );
     }
 }

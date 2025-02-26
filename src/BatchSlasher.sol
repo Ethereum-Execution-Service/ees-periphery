@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.27;
+pragma solidity 0.8.26;
 
 import {ICoordinator} from "ees-core/src/interfaces/ICoordinator.sol";
 import {IBatchSlasher} from "./interfaces/IBatchSlasher.sol";
