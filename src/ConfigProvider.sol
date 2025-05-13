@@ -7,6 +7,7 @@ import {Querier} from "./Querier.sol";
 import {BatchSlasher} from "./BatchSlasher.sol";
 import {IConfigProvider} from "./interfaces/IConfigProvider.sol";
 
+/// @author 0xst4ck
 contract ConfigProvider is IConfigProvider {
     JobRegistry public jobRegistry;
     Coordinator public coordinator;

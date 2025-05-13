@@ -4,6 +4,7 @@ pragma solidity 0.8.26;
 import {ICoordinator} from "ees-core/src/interfaces/ICoordinator.sol";
 import {IBatchSlasher} from "./interfaces/IBatchSlasher.sol";
 
+/// @author 0xst4ck
 contract BatchSlasher is IBatchSlasher {
     ICoordinator public coordinator;
 

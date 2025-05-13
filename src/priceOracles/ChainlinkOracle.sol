@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {AggregatorV3Interface} from "lib/chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import {ERC20} from "lib/solmate/src/tokens/ERC20.sol";
 
-/// @author Victor Brevig
+/// @author 0xst4ck
 contract ChainlinkOracle {
     AggregatorV3Interface internal ethUsdPriceFeed;
     uint8 internal ethPriceFeedDecimals;

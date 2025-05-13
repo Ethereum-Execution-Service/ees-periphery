@@ -10,6 +10,7 @@ import {IApplication} from "ees-core/src/interfaces/IApplication.sol";
 import {Coordinator} from "ees-core/src/Coordinator.sol";
 import {ICoordinator} from "ees-core/src/interfaces/ICoordinator.sol";
 
+/// @author 0xst4ck
 contract Querier is IQuerier {
     JobRegistry jobRegistry;
     Coordinator coordinator;
