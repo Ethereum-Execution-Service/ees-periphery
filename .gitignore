@@ -1,4 +1,5 @@
 .env
+/script
 /cache
 /out
 /lib

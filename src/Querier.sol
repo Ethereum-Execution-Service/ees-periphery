@@ -10,17 +10,28 @@ import {IApplication} from "ees-core/src/interfaces/IApplication.sol";
 import {Coordinator} from "ees-core/src/Coordinator.sol";
 import {ICoordinator} from "ees-core/src/interfaces/ICoordinator.sol";
 
-/// @author 0xst4ck
+/// @title Querier
+/// @notice Contract for querying job, executor, and epoch information from the EES system
+/// @dev Provides aggregated view functions to fetch comprehensive data about jobs, executors, commitments, and epochs
 contract Querier is IQuerier {
+    /// @notice The JobRegistry contract
     JobRegistry jobRegistry;
+
+    /// @notice The Coordinator contract
     Coordinator coordinator;
 
+    /// @notice Initializes the Querier with JobRegistry and Coordinator
+    /// @param _jobRegistry The JobRegistry contract instance
+    /// @param _coordinator The Coordinator contract instance
     constructor(JobRegistry _jobRegistry, Coordinator _coordinator) {
         jobRegistry = _jobRegistry;
         coordinator = _coordinator;
     }
+
     // HAVE TO BREAK UP INTO TWO STRUCTS TO AVOID STACK TOO DEEP ERROR
 
+    /// @notice Basic job information structure
+    /// @dev Used internally to avoid stack too deep errors
     struct JobBasicInfo {
         uint256 index;
         address owner;
@@ -34,6 +45,8 @@ contract Querier is IQuerier {
         uint24 zeroFeeWindow;
     }
 
+    /// @notice Extended job information structure
+    /// @dev Used internally to avoid stack too deep errors
     struct JobExtendedInfo {
         address sponsor;
         uint48 executionCounter;
@@ -42,6 +55,9 @@ contract Querier is IQuerier {
         uint96 creationTime;
     }
 
+    /// @notice Fetches job data for all specified indices along with the corresponding execution module data
+    /// @param _indices Array of job indices to query
+    /// @return jobsData Array of JobData structs containing comprehensive information about each job
     function getJobs(uint256[] calldata _indices) public view override returns (JobData[] memory) {
         JobData[] memory jobsData = new JobData[](_indices.length);
         for (uint256 i; i < _indices.length;) {
@@ -118,12 +134,10 @@ contract Querier is IQuerier {
         return jobsData;
     }
 
-    function getExecutors(address[] calldata _executors)
-        public
-        view
-        override
-        returns (ICoordinator.Executor[] memory)
-    {
+    /// @notice Fetches executor information for the given executor addresses
+    /// @param _executors Array of executor addresses to query
+    /// @return executors Array of Executor structs containing information about each executor
+    function getExecutors(address[] calldata _executors) public view override returns (ICoordinator.Executor[] memory) {
         ICoordinator.Executor[] memory executors = new ICoordinator.Executor[](_executors.length);
         for (uint256 i; i < _executors.length;) {
             (
@@ -158,6 +172,9 @@ contract Querier is IQuerier {
         return executors;
     }
 
+    /// @notice Fetches commitment data for the given executors
+    /// @param _executors Array of executor addresses to query commitment data for
+    /// @return commitData Array of CommitData structs containing commitment information for each executor
     function getCommitData(address[] calldata _executors)
         public
         view
@@ -177,6 +194,14 @@ contract Querier is IQuerier {
         return commitData;
     }
 
+    /// @notice Fetches comprehensive information about the current epoch
+    /// @return epoch The current epoch number
+    /// @return epochEndTime The timestamp when the current epoch ends
+    /// @return seed The random seed for the current epoch
+    /// @return numberOfActiveExecutors The number of active executors in the current epoch
+    /// @return designatedExecutors Array of executor addresses designated for the current epoch rounds
+    /// @return poolBalance The balance of the current epoch pool
+    /// @return nextEpochPoolBalance The balance that will be available in the next epoch
     function getCurrentEpochInfo()
         public
         view
@@ -192,21 +217,8 @@ contract Querier is IQuerier {
         bytes memory config = coordinator.exportConfig();
         // Decode the config to get roundsPerEpoch
         (
-            ,
-            ,
-            ,
-            ,
-            ,
-            , // Skip the first 6 parameters
-            uint8 roundsPerEpoch,
-            ,
-            ,
-            ,
-            ,
-            ,
-            ,
-            ,
-            , // Skip the remaining parameters
+            ,,,,,, // Skip the first 6 parameters
+            uint8 roundsPerEpoch,,,,,,,,, // Skip the remaining parameters
         ) = abi.decode(
             config,
             (
